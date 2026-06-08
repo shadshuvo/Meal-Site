@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $mealTypes = $_POST['meal_types'] ?? [];
 
     $today = new DateTime(date('Y-m-d'));
-    if ($startDate < $today) {
-        $error = "You can only bulk cancel meals for today or future dates.";
+    if ($startDate <= $today) {
+        $error = "You can only bulk cancel meals for tomorrow or future dates.";
     } else {
         while ($startDate <= $endDate) {
             $currentMonthIter = $startDate->format('Y-m');
@@ -270,12 +270,12 @@ function formatMonth($month) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2 ml-1">Start Date</label>
-                        <input type="date" name="start_date" min="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3.5 rounded-xl border border-slate-600 focus:ring-2 focus:ring-red-500 bg-slate-900 text-slate-200">
+                        <input type="date" name="start_date" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" required class="w-full px-4 py-3.5 rounded-xl border border-slate-600 focus:ring-2 focus:ring-red-500 bg-slate-900 text-slate-200">
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2 ml-1">End Date</label>
-                        <input type="date" name="end_date" min="<?php echo date('Y-m-d'); ?>" required class="w-full px-4 py-3.5 rounded-xl border border-slate-600 focus:ring-2 focus:ring-red-500 bg-slate-900 text-slate-200">
+                        <input type="date" name="end_date" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" required class="w-full px-4 py-3.5 rounded-xl border border-slate-600 focus:ring-2 focus:ring-red-500 bg-slate-900 text-slate-200">
                     </div>
                 </div>
 

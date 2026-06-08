@@ -3,7 +3,8 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #0f172a;
+    color: #f8fafc;
 }
 
 .container {
@@ -11,6 +12,7 @@ body {
     margin: auto;
     overflow: hidden;
     padding: 20px;
+    background-color: transparent;
 }
 
 h1, h2 {
@@ -18,7 +20,7 @@ h1, h2 {
 }
 
 form {
-    background: #fff;
+    background: #1e293b;
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -54,7 +56,7 @@ button:hover {
 }
 
 .day {
-    background: #fff;
+    background: #1e293b;
     padding: 10px;
     text-align: center;
     border-radius: 5px;
@@ -95,7 +97,7 @@ button:hover {
 }
 
 .cancellation {
-    background: #fff;
+    background: #1e293b;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
@@ -252,8 +254,8 @@ button.undo-cancel:hover {
     width: 90%;
     margin: 0 auto;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    box-shadow: none;
+    background-color: transparent;
 }
 
 /* Back link styles */

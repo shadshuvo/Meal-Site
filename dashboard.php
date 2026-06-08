@@ -93,77 +93,32 @@ function handlePostRequest($post, &$data, $currentMonth, $dataFile) {
     <title>Meal Manager - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
     <style>
+body {
+    background-color: #0f172a; /* slate-900 */
+    color: #f8fafc;
+}
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 15px;
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
-.header-links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.header-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 15px;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.header-links .logout {
-    background-color: #ef4444;
-}
-
-.header-links .logout:hover {
-    background-color: #dc2626;
-}
-
-.header-links .admin {
-    background-color: #6366f1;
-}
-
-.header-links .admin:hover {
-    background-color: #4f46e5;
-}
-
-.header-links .summary {
-    background-color: #10b981;
-}
-
-.header-links .summary:hover {
-    background-color: #059669;
-}
-
-.header-links .daily-summary {
-    background-color: #0ea5e9;
-}
-
-.header-links .daily-summary:hover {
-    background-color: #0284c7;
-}
-
-/* Meal Buttons from Here */
-
+/* Guest Controls */
 .guest-control {
     display: none;
     align-items: center;
     gap: 8px;
     margin-top: 10px;
-    background: #f0f4f8; /* Light gray-blue background */
+    background: #1e293b; /* slate-800 */
     padding: 8px;
     border-radius: 6px;
-    color: #000000; /* Black text for clarity */
+    color: #f8fafc;
+    border: 1px solid #334155;
 }
 
 .guest-control.active {
@@ -177,48 +132,53 @@ function handlePostRequest($post, &$data, $currentMonth, $dataFile) {
 }
 
 .btn-guest {
-    padding: 4px 8px;
-    border: 1px solid #d1e7ff;
-    background: #eff6ff; /* Soft blue for guest buttons */
+    padding: 4px 10px;
+    border: 1px solid #475569;
+    background: #334155;
     border-radius: 4px;
     cursor: pointer;
-    color: #000000; /* Black text */
+    color: #f8fafc;
+    transition: all 0.2s;
+}
+.btn-guest:hover {
+    background: #475569;
 }
 
 .btn-save-guest {
     padding: 4px 12px;
-    background: #34d399; /* Soft green for Save button */
-    color: #000000; /* Black text */
+    background: #10b981; /* emerald-500 */
+    color: #ffffff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
 }
-
 .btn-save-guest:hover {
-    background: #059669; /* Darker green on hover */
-    color: #ffffff; /* White text on hover for contrast */
+    background: #059669;
 }
 
 .btn-cancel-guest {
     padding: 4px 12px;
-    background: #f87171; /* Bright red for Cancel button */
-    color: #000000; /* Black text */
+    background: #ef4444; /* red-500 */
+    color: #ffffff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
-
 .btn-cancel-guest:hover {
-    background: #e11d48; /* Darker red on hover */
-    color: #ffffff; /* White text on hover for contrast */
+    background: #dc2626;
 }
 
 .guest-count-display {
-    min-width: 20px;
+    min-width: 24px;
     text-align: center;
-    color: #000000; /* Black text */
+    color: #f8fafc;
+    font-weight: bold;
 }
 
+/* Calendar Grid */
 #calendar {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -227,56 +187,104 @@ function handlePostRequest($post, &$data, $currentMonth, $dataFile) {
 }
 
 .day {
-    border: 1px solid #cbd5e1;
+    border: 1px solid #1e293b;
     padding: 15px;
-    border-radius: 8px;
-    background: #ffffff;
-    color: #000000; /* Black text */
+    border-radius: 12px;
+    background: #1e293b;
+    color: #f8fafc;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.day:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
 .day.past {
     opacity: 0.5;
+    background: #0f172a;
+    border-color: #1e293b;
 }
 
 .day.cancelled {
-    background: #fef2f2; /* Light red for cancelled days */
-    color: #000000; /* Black text */
+    background: rgba(153, 27, 27, 0.1);
+    border-color: rgba(153, 27, 27, 0.3);
 }
 
+.day h3 {
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 8px;
+}
+
+/* Meal Blocks */
 .meal {
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
     cursor: pointer;
-    background: #f0fdfa; /* Mint green for meal cards */
-    color: #000000; /* Black text */
+    background: #334155;
+    color: #cbd5e1;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+.meal:hover:not(.active) {
+    background: #475569;
 }
 
 .meal.active {
-    background: #d1fae5; /* Soft green for active meal cards */
-    color: #000000; /* Black text */
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+/* Meal Action Buttons */
 .meal-buttons {
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
 }
 
 .meal-buttons button {
-    padding: 8px;
+    padding: 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    background: #93c5fd; /* Soft blue for meal action buttons */
-    color: #000000; /* Black text */
-    transition: background-color 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
-.meal-buttons button:hover {
-    background: #3b82f6; /* Bright blue on hover */
-    color: #ffffff; /* White text on hover for contrast */
+.meal-buttons .cancel-meal {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+.meal-buttons .cancel-meal:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.meal-buttons .undo-cancel {
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+.meal-buttons .undo-cancel:hover {
+    background: rgba(56, 189, 248, 0.2);
+}
+
+.meal-buttons .btn-add-guest {
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8; /* sky-400 */
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.15);
+}
+.meal-buttons .btn-add-guest:hover {
+    background: rgba(56, 189, 248, 0.2);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    border-color: rgba(56, 189, 248, 0.6);
 }
 
 .guest-indicator {
@@ -285,188 +293,88 @@ function handlePostRequest($post, &$data, $currentMonth, $dataFile) {
     align-items: center;
     gap: 4px;
     font-size: 0.9em;
-    color: #000000; /* Black text */
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 6px;
+    border-radius: 12px;
 }
 
-/* Modern Header Styles */
+/* Header Styles */
 .welcome-header {
-    background: linear-gradient(135deg, #f6f8ff 0%, #f1f4ff 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.6s ease-out;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
-}
-
-.clock-widget {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-size: 0.65rem;
-    color: #6b7280;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 0.4rem 0.6rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    backdrop-filter: blur(4px);
-    line-height: 1;
-    z-index: 10;
 }
 
 .main-title {
     font-size: 3.5rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #38bdf8;
     margin: 0 auto 0.5rem;
-    animation: glow 2s ease-in-out infinite alternate;
-    transition: all 0.3s ease;
-    max-width: max-content; /* Ensure proper centering */
 }
 
 .welcome-text {
     font-size: 1.5rem;
-    color: #4b5563;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+}
+.welcome-text .username {
+    color: #a78bfa;
+    font-weight: bold;
 }
 
-/* Neon Effects */
-.neon-blue {
-    color: #2563eb;
-    text-shadow: 
-        0 0 7px rgba(37, 99, 235, 0.3),
-        0 0 10px rgba(37, 99, 235, 0.3),
-        0 0 21px rgba(37, 99, 235, 0.3),
-        0 0 42px rgba(37, 99, 235, 0.3);
-    animation: neonBlueGlow 1.5s ease-in-out infinite alternate;
-}
-
-.neon-purple {
-    color: #7c3aed;
-    text-shadow: 
-        0 0 7px rgba(124, 58, 237, 0.3),
-        0 0 10px rgba(124, 58, 237, 0.3),
-        0 0 21px rgba(124, 58, 237, 0.3);
-    animation: neonPurpleGlow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes neonBlueGlow {
-    from {
-        text-shadow: 
-            0 0 7px rgba(37, 99, 235, 0.3),
-            0 0 10px rgba(37, 99, 235, 0.3),
-            0 0 21px rgba(37, 99, 235, 0.3),
-            0 0 42px rgba(37, 99, 235, 0.3);
-    }
-    to {
-        text-shadow: 
-            0 0 10px rgba(37, 99, 235, 0.5),
-            0 0 21px rgba(37, 99, 235, 0.5),
-            0 0 42px rgba(37, 99, 235, 0.5),
-            0 0 82px rgba(37, 99, 235, 0.5);
-    }
-}
-
-@keyframes neonPurpleGlow {
-    from {
-        text-shadow: 
-            0 0 7px rgba(124, 58, 237, 0.3),
-            0 0 10px rgba(124, 58, 237, 0.3),
-            0 0 21px rgba(124, 58, 237, 0.3);
-    }
-    to {
-        text-shadow: 
-            0 0 10px rgba(124, 58, 237, 0.5),
-            0 0 21px rgba(124, 58, 237, 0.5),
-            0 0 42px rgba(124, 58, 237, 0.5);
-    }
-}
-
-/* Responsive */
 @media (max-width: 640px) {
     .main-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
     .welcome-text {
-        font-size: 1.125rem;
+        font-size: 1.2rem;
     }
-    .clock-widget {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-    }
-    .notice-text {
-        animation: scrollText 15s linear infinite; /* Faster on mobile */
+    .welcome-header {
+        padding: 1.5rem;
     }
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from { 
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-    to { 
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Add these styles to the existing <style> section */
 .welcome-section {
     position: relative;
     z-index: 1;
-    text-align: center; /* Center align the content */
+    text-align: center;
 }
 
-/* Update the notice-board styles */
 .notice-board {
     margin-top: 1rem;
     padding: 1rem;
-    background: rgba(254, 226, 226, 0.5);
+    background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.2);
     border-radius: 0.75rem;
     position: relative;
     overflow: hidden;
-    white-space: nowrap; /* Keep text in single line */
+    white-space: nowrap;
 }
 
 .notice-text {
-    color: #dc2626;
+    color: #fca5a5;
     font-weight: 600;
-    display: inline-block; /* Required for animation */
+    display: inline-block;
     animation: scrollText 20s linear infinite;
-    padding-left: 100%; /* Start from right side */
+    padding-left: 100%;
 }
 
-/* Add new scrolling animation */
 @keyframes scrollText {
-    from {
-        transform: translateX(0%);
-    }
-    to {
-        transform: translateX(-100%);
-    }
+    from { transform: translateX(0%); }
+    to { transform: translateX(-100%); }
 }
 
     </style>
 </head>
-<body>
-    <div class="container">
+<body class="bg-slate-900 text-slate-100 antialiased">
+    <?php include 'nav.php'; ?>
+    <div class="container mx-auto px-4 mt-6">
         <div class="welcome-header">
     <div class="header-content">
         <div class="welcome-section">
@@ -486,16 +394,6 @@ function handlePostRequest($post, &$data, $currentMonth, $dataFile) {
         </div>
     </div>
 </div>
-        <div class="header-links">
-            <a href="logout.php" class="logout">Logout</a>
-            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
-                <a href="admin.php" class="admin">Admin Panel</a>
-            <?php endif; ?>
-            <a href="monthly_summary.php" class="summary">Monthly Summary</a>
-            <a href="daily_summary.php?date=<?php echo date('Y-m-d'); ?>" class="daily-summary">View Today's Summary</a>
-            <a href="market.php" class="summary">Add Bazar</a>
-            <a href="user_history.php" class="summary">Meal History</a>
-        </div>
 
         <div id="calendar">
             <?php
@@ -513,8 +411,8 @@ function handlePostRequest($post, &$data, $currentMonth, $dataFile) {
                 $nightGuests = $dayData['guests'][$_SESSION['user']]['night'] ?? 0;
                 
                 $currentTime = new DateTime();
-                $morningDeadline = new DateTime("$currentMonth-$date 08:00:00");
-                $nightDeadline = new DateTime("$currentMonth-$date 14:00:00");
+                $morningDeadline = new DateTime("$currentMonth-$date 11:00:00");
+                $nightDeadline = new DateTime("$currentMonth-$date 23:00:00");
             ?>
                 <div class="day <?php echo $isPast ? 'past' : ''; ?> <?php echo $isCancelled ? 'cancelled' : ''; ?>">
                     <h3><?php echo $day; ?> <?php echo date('F', strtotime($currentMonth)); ?></h3>
